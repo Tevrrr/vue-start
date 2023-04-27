@@ -5,7 +5,7 @@
 				Create Post</my-button
 			>
 			<my-select v-model="selectValue" :options="options"></my-select>
-			<my-input v-model="searchQwery" type="text" placeholder="Search" />
+			<my-input v-focus v-model="searchQwery" type="text" placeholder="Search" />
 		</nav>
 		<my-dialog v-model:show="dialogVisible">
 			<post-form @create="createPost" />
@@ -16,7 +16,8 @@
 			<!-- <pages-nav v-model="page" :totalPages="totalPages"/> -->
 		</div>
 		<h4 v-else>Loading...</h4>
-		<div ref="observer"></div>
+		<!-- <div ref="observer"></div> -->
+		<div v-intersections="loadMorePosts"></div>
 	</div>
 </template>
 
@@ -106,19 +107,19 @@ export default {
 	},
 	mounted() {
         this.fetchPosts();
-		const options = {
-			rootMargin: '0px',
-			threshold: 1.0,
-        };
-        const callback = (entries, observer) => {
-            if (entries[0].isIntersecting && !this.isPostsLoading && this.page < this.totalPages) {
-                console.log(1);
-                this.loadMorePosts();
-            }
-        }
+		// const options = {
+		// 	rootMargin: '0px',
+		// 	threshold: 1.0,
+        // };
+        // const callback = (entries, observer) => {
+        //     if (entries[0].isIntersecting && !this.isPostsLoading && this.page < this.totalPages) {
+        //         console.log(1);
+        //         this.loadMorePosts();
+        //     }
+        // }
 
-        const observer = new IntersectionObserver(callback, options);
-        observer.observe(this.$refs.observer)
+        // const observer = new IntersectionObserver(callback, options);
+        // observer.observe(this.$refs.observer)
 	},
 	computed: {
 		sortedPost() {
