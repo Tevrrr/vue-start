@@ -6,21 +6,12 @@
     </div>
 </template>
 <script>
+import toggleMixin from '@/mixins/toggleMixin';
 import PostForm from '../PostForm.vue'
 export default {
   components: { PostForm },
     name: 'my-dialog',
-    props: {
-        show: {
-            type: Boolean,
-            default:false
-        }
-    },
-    methods: {
-        hideDialog() {
-            this.$emit('update:show',false)
-        }
-    }
+    mixins: [toggleMixin]
 }
 </script>
 <style scoped>

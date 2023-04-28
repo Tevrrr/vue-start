@@ -1,6 +1,7 @@
 /** @format */
 
 import PostPage from '@/pages/PostPage.vue';
+import PostPageWithStore from '@/pages/PostPageWithStore.vue';
 import PostIdPage from '@/pages/PostIdPage.vue';
 import Main from '@/pages/Main.vue';
 import About from '@/pages/About.vue';
@@ -22,6 +23,10 @@ const routes = [
 	{
 		path: '/about',
 		component: About,
+	},
+	{
+		path: '/store',
+		component: PostPageWithStore,
 	},
 ];
 const router = createRouter({
