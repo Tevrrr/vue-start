@@ -1,6 +1,8 @@
+<!-- @format -->
+
 <template>
-    <div>
-        <!-- <h1>{{ $store.state.isAuth ? 'User is authorized' : 'User is not authorized' }}</h1>
+	<div>
+		<!-- <h1>{{ $store.state.isAuth ? 'User is authorized' : 'User is not authorized' }}</h1>
         <h1>{{ $store.state.likes }}</h1>
         <h1>{{ $store.getters.doubleLikes }}</h1>
         <div>
@@ -11,12 +13,12 @@
 			<my-button @click="dialogVisible = !dialogVisible">
 				Create Post</my-button
 			>
-			<!-- <my-select v-model="selectValue" :options="options"></my-select> -->
-			<!-- <my-input v-focus v-model="searchQwery" type="text" placeholder="Search" /> -->
+			<my-select :model-value="selectValue" @update:model-value="setSelectValue" :options="options"></my-select>
+			<my-input v-focus :model-value="searchQwery" @update:model-value="setSearchQwery" type="text" placeholder="Search" />
 		</nav>
-		<!-- <my-dialog v-model:show="dialogVisible">
+		<my-dialog v-model:show="dialogVisible">
 			<post-form @create="createPost" />
-		</my-dialog> -->
+		</my-dialog>
 		<div v-if="!isPostsLoading">
 			<post-list :posts="sortedAndSearchPost" @remove="deletePost" />
 		</div>
@@ -29,15 +31,24 @@
 import PostList from '@/components/PostList.vue';
 import PostForm from '@/components/PostForm.vue';
 import PagesNav from '@/components/PagesNav.vue';
-import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
 	components: { PostForm, PostList, PagesNav },
 	data() {
 		return {
-
+			dialogVisible: false,
 		};
 	},
 	methods: {
+		...mapMutations({
+            setPage: 'post/setPost',
+            setSearchQwery: 'post/setSearchQwery',
+            setSelectValue: 'post/setSelectValue'
+		}),
+		...mapActions({
+			loadMorePosts: 'post/loadMorePosts',
+			fetchPosts: 'post/fetchPosts',
+		}),
 		createPost(newPost) {
 			this.posts.push(newPost);
 			this.dialogVisible = false;
@@ -50,31 +61,28 @@ export default {
 		},
 	},
 	mounted() {
-        // this.fetchPosts();
-
+		this.fetchPosts();
 	},
 	computed: {
-		sortedPost() {
-			return [...this.posts].sort((first, second) => {
-				return first[this.selectValue]?.localeCompare(
-					second[this.selectValue]
-				);
-			});
-		},
-		sortedAndSearchPost() {
-			return this.sortedPost.filter((item) => {
-				return item.title
-					?.toLocaleLowerCase()
-					?.includes(this.searchQwery?.toLocaleLowerCase());
-			});
-		},
+		...mapState({
+			posts: (state) => state.post.posts,
+			isPostsLoading: (state) => state.post.isPostsLoading,
+			page: (state) => state.post.page,
+			selectValue: (state) => state.post.selectValue,
+			searchQwery: (state) => state.post.searchQwery,
+			limit: (state) => state.post.limit,
+			totalPages: (state) => state.post.totalPages,
+			options: (state) => state.post.options,
+		}),
+		...mapGetters({
+			sortedPost: 'post/sortedPost',
+			sortedAndSearchPost: 'post/sortedAndSearchPost',
+		}),
 	},
 };
 </script>
 
 <style scoped>
-
-
 .navbar {
 	display: flex;
 	padding: 10px;

@@ -1,5 +1,7 @@
 /** @format */
 
+import axios from 'axios'
+
 export const postModule = {
 	state: () => ({
 		posts: [],
@@ -100,6 +102,8 @@ export const postModule = {
 					commit('setPosts', [...state.posts, ...response.data]);
 				} catch (error) {
 					console.log(error);
+				} finally {
+					commit('setLoading', false);
 				}
 			}, 500);
 		},
