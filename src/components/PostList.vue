@@ -1,7 +1,7 @@
 <!-- @format -->
 
 <template>
-	<div class="postList" v-if="posts.length > 0">
+	<div class="postList" v-if="posts?.length > 0">
 		<h3>Posts</h3>
 		<transition-group name="post-list">
 			<post-item

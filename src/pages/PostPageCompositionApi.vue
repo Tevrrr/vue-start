@@ -2,9 +2,7 @@
 
 <template>
 	<div>
-        {{ likes }}
-        <my-button @click="addLike">Add</my-button>
-		<!-- <nav class="navbar">
+		<nav class="navbar">
 			<my-button @click="dialogVisible = !dialogVisible">
 				Create Post</my-button
 			>
@@ -20,10 +18,10 @@
 			<post-form @create="createPost" />
 		</my-dialog>
 		<div v-if="!isPostsLoading">
-			<post-list :posts="sortedAndSearchPost" @remove="deletePost" />
+			<post-list :posts="sortedAndSearchPosts" @remove="deletePost" />
 		</div>
 		<h4 v-else>Loading...</h4>
-		<div v-intersections="loadMorePosts"></div> -->
+		<!-- <div v-intersections="loadMorePosts"></div> -->
 	</div>
 </template>
 
@@ -31,13 +29,14 @@
 import PostList from '@/components/PostList.vue';
 import PostForm from '@/components/PostForm.vue';
 import PagesNav from '@/components/PagesNav.vue';
+import { usePosts } from '@/hools/usePosts';
+import { useSortedPosts } from '@/hools/useSortedPosts';
+import { useSortedAndSearchPosts } from '@/hools/useSortedAndSearchPosts';
 import { ref } from 'vue';
-import axios from 'axios';
 export default {
 	components: { PostForm, PostList, PagesNav },
 	data() {
 		return {
-			dialogVisible: false,
 			options: [
 				{ value: 'title', name: 'Sort by title' },
 				{ value: 'body', name: 'Sort by body' },
@@ -45,16 +44,26 @@ export default {
 		};
 	},
 	setup(props) {
-        const likes = ref(2);
-
-        const addLike = () => {
-            likes.value++;
-        }
-
-        return {
-            likes,
-            addLike
-        }
+		const { posts, isPostsLoading, totalPages } = usePosts(10);
+		const { selectValue, sortedPosts } = useSortedPosts(posts);
+		const { searchQwery, sortedAndSearchPosts } =
+            useSortedAndSearchPosts(sortedPosts);
+        const dialogVisible = ref(false)
+        const createPost =(newPost) => {
+			posts.value.push(newPost);
+			dialogVisible.value = false;
+		}
+		return {
+			posts,
+			isPostsLoading,
+			totalPages,
+			selectValue,
+			sortedPosts,
+			searchQwery,
+            sortedAndSearchPosts,
+            createPost,
+            dialogVisible
+		};
 	},
 };
 </script>
